@@ -1,0 +1,38 @@
+# Arquivos específicos do IntelliJ IDEA
+.idea/
+
+# Arquivos de compilação e arquivos gerados
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.iml
+
+# Arquivos de configuração do Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# Arquivos de configuração do Eclipse
+.classpath
+.project
+.settings/
+
+# Arquivos temporários
+*~
+*.swp
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+
+# Outros arquivos gerados por sistemas de build
+/build/
+
+# Arquivos específicos de ambiente de desenvolvimento (opcional)
+# Adicione qualquer outro arquivo ou diretório que você deseja ignorar aqui
