@@ -17,10 +17,13 @@ public class Tabela {
         return tuplas;
     }
 
-    public void imprimir(){
-        for(int i = 0; i<tuplas.size(); i++){
-            System.out.println(tuplas.get(i).getPalavra());
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Tabela:\n");
+        for (Tupla tupla : tuplas) {
+            sb.append(tupla.toString()).append("\n"); // Utiliza toString() de Tupla
         }
+        return sb.toString();
     }
 
 }

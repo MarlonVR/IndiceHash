@@ -24,11 +24,31 @@ public class Main {
 
         } catch (FileNotFoundException e) {/**/}
 
-        tabela.imprimir();
+        System.out.println(tabela.toString());
         Scanner scanner = new Scanner(System.in);
         System.out.println("Digite o tamanho das páginas:");
-        Paginas paginas = new Paginas(scanner.nextInt(), tabela);
-        paginas.imprimir();
+
+        int tamanhoPagina = scanner.nextInt();
+        ArrayList<Pagina> paginas = new ArrayList<>();
+
+        int totalPalavras = tabela.getTamanho();
+        int quantidadePaginas = totalPalavras / tamanhoPagina + (totalPalavras % tamanhoPagina == 0 ? 0 : 1);
+
+        ArrayList<Tupla> tuplas = tabela.getTabela();
+        int indiceTupla = 0;
+
+        for (int i = 0; i < quantidadePaginas; i++) {
+            Pagina novaPagina = new Pagina();
+            for (int j = 0; j < tamanhoPagina && indiceTupla < tuplas.size(); j++, indiceTupla++) {
+                novaPagina.adicionarPalavra(tuplas.get(indiceTupla));
+            }
+            paginas.add(novaPagina);
+        }
+
+        for (int i = 0; i < paginas.size(); i++) {
+            System.out.println("Pagina " + (i+1));
+            System.out.println(paginas.get(i).toString());
+        }
 
     }
 

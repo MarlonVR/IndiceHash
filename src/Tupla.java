@@ -16,4 +16,12 @@ public class Tupla {
         this.indice = indice;
     }
 
+    @Override
+    public String toString() {
+        return "Tupla{" +
+                "palavra='" + palavra + '\'' +
+                ", indice=" + indice +
+                '}';
+    }
+
 }
