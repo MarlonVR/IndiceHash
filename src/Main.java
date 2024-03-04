@@ -25,22 +25,18 @@ public class Main {
         } catch (FileNotFoundException e) {/**/}
 
         tabela.imprimir();
-
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Digite a quantidade de páginas:");
+        System.out.println("Digite o tamanho das páginas:");
         Paginas paginas = new Paginas(scanner.nextInt(), tabela);
         paginas.imprimir();
 
     }
 
-    public static int funcaoHash(String palavra, int tamanhoTabela) {
-        int hash = 0;
-        int primo = 31; // Um número primo é usado para ajudar na distribuição uniforme
-
+    public static int funcaoHash(String palavra, int quantidadeBuckets) {
+        int hash = 0, primo = 31;
         for (int i = 0; i < palavra.length(); i++) {
-            hash = (primo * hash + palavra.charAt(i)) % tamanhoTabela;
+            hash = (primo * hash + palavra.charAt(i)) % quantidadeBuckets;
         }
-
         return hash;
     }
 }
