@@ -21,7 +21,7 @@ public class Tabela {
     public String toString() {
         StringBuilder sb = new StringBuilder("Tabela:\n");
         for (Tupla tupla : tuplas) {
-            sb.append(tupla.toString()).append("\n"); // Utiliza toString() de Tupla
+            sb.append(tupla.toString()).append("\n");
         }
         return sb.toString();
     }

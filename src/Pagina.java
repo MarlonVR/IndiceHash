@@ -1,21 +1,30 @@
 import java.util.ArrayList;
 
 public class Pagina {
-    private ArrayList<Tupla> palavras;
+    private ArrayList<Tupla> pagina;
+    private int indice;
 
-    public Pagina() {
-        this.palavras = new ArrayList<>();
+    public Pagina(int indice) {
+        this.indice = indice;
+        this.pagina = new ArrayList<>();
     }
 
     public void adicionarPalavra(Tupla palavra) {
-        palavras.add(palavra);
+        pagina.add(palavra);
+    }
+
+    public ArrayList<Tupla> getPagina() {
+        return pagina;
+    }
+    public int getIndice() {
+        return indice;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Tupla tupla : palavras) {
-            sb.append(tupla.getPalavra()).append("\n"); // Supondo que Tupla tenha o método getPalavra()
+        for (Tupla tupla : pagina) {
+            sb.append(tupla.getPalavra()).append("\n");
         }
         return sb.toString();
     }

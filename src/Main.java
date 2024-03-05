@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -24,11 +25,29 @@ public class Main {
 
         } catch (FileNotFoundException e) {/**/}
 
-        System.out.println(tabela.toString());
+        //System.out.println(tabela.toString());
         Scanner scanner = new Scanner(System.in);
         System.out.println("Digite o tamanho das páginas:");
 
         int tamanhoPagina = scanner.nextInt();
+        ArrayList<Pagina> paginas = criarPaginas(tabela, tamanhoPagina);
+        imprimirPaginas(paginas);
+
+        Bucket[] buckets = criarBuckets(tabela, paginas);
+        imprimirBuckets(buckets);
+
+    }
+
+    public static int funcaoHash(String palavra, int quantidadeBuckets) {
+        int hash = 0, primo = 31;
+        for (int i = 0; i < palavra.length(); i++) {
+            hash = (primo * hash + palavra.charAt(i)) % quantidadeBuckets;
+        }
+        System.out.println("Palavra " + palavra + " hash -> " + hash);
+        return hash;
+    }
+
+    private static ArrayList<Pagina> criarPaginas(Tabela tabela, int tamanhoPagina) {
         ArrayList<Pagina> paginas = new ArrayList<>();
 
         int totalPalavras = tabela.getTamanho();
@@ -38,25 +57,49 @@ public class Main {
         int indiceTupla = 0;
 
         for (int i = 0; i < quantidadePaginas; i++) {
-            Pagina novaPagina = new Pagina();
+            Pagina novaPagina = new Pagina(i+1);
             for (int j = 0; j < tamanhoPagina && indiceTupla < tuplas.size(); j++, indiceTupla++) {
-                novaPagina.adicionarPalavra(tuplas.get(indiceTupla));
+                Tupla tupla = tuplas.get(indiceTupla);
+                tupla.setIndice(i+1);
+                novaPagina.adicionarPalavra(tupla);
             }
             paginas.add(novaPagina);
         }
-
-        for (int i = 0; i < paginas.size(); i++) {
-            System.out.println("Pagina " + (i+1));
-            System.out.println(paginas.get(i).toString());
-        }
-
+        return paginas;
     }
 
-    public static int funcaoHash(String palavra, int quantidadeBuckets) {
-        int hash = 0, primo = 31;
-        for (int i = 0; i < palavra.length(); i++) {
-            hash = (primo * hash + palavra.charAt(i)) % quantidadeBuckets;
+    private static Bucket[] criarBuckets(Tabela tabela, ArrayList<Pagina> paginas){
+        int tamanhoBucket = 2;
+        int totalTuplas = tabela.getTamanho();
+        int quantidadeBuckets = totalTuplas / tamanhoBucket + ( totalTuplas % tamanhoBucket == 0 ? 0 : 1);
+
+        Bucket[] buckets = new Bucket[quantidadeBuckets];
+
+        for(int i = 0; i<buckets.length; i++){
+            buckets[i] = new Bucket(tamanhoBucket, (i+1));
         }
-        return hash;
+
+        for(int i = 0; i<paginas.size(); i++){
+            ArrayList<Tupla> pagina = paginas.get(i).getPagina();
+            for(int j = 0; j<pagina.size(); j++){
+                int hash = funcaoHash(pagina.get(j).getPalavra(), quantidadeBuckets);
+                buckets[hash].adicionarTupla(pagina.get(j));
+            }
+        }
+
+        return buckets;
+    }
+
+    private static void imprimirPaginas(ArrayList<Pagina> paginas){
+        for (int i = 0; i < paginas.size(); i++) {
+            System.out.println("Pagina " + paginas.get(i).getIndice());
+            System.out.println(paginas.get(i).toString());
+        }
+    }
+    
+    private static void imprimirBuckets(Bucket[] buckets){
+        for(int i = 0; i<buckets.length; i++){
+            System.out.println(buckets[i].toString());
+        }
     }
 }

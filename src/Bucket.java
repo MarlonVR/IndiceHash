@@ -31,13 +31,22 @@ public class Bucket {
         proximoBucket = new Bucket(tamanhoBucket, indice);
     }
 
+    public int getIndice(){
+        return indice;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Bucket:\n");
-        for (Tupla tupla : tuplas) {
-            sb.append(tupla.toString()).append("\n");
+        sb.append("Bucket " + indice + ":\n");
+        try{
+            for (Tupla tupla : tuplas) {
+                sb.append(tupla.toString()).append("\n");
+            }
+        }catch (Exception e){
+            //
         }
+
         return sb.toString();
     }
 }
