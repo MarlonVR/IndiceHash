@@ -1,10 +1,12 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
+
+    public static int colisoes = 0;
+    public static int overflows = 0;
     public static void main(String[] args) {
         Tabela tabela = new Tabela();
 
@@ -12,29 +14,27 @@ public class Main {
             File arquivo = new File("palavras.txt");
             Scanner scanner = new Scanner(arquivo);
 
-            for(int i = 0; i<20; i++){
-                if(scanner.hasNextLine()){
-                    tabela.adicionarTupla(new Tupla(scanner.nextLine()));
-                }
-            }
-            scanner.close();
-
-            /*while (scanner.hasNextLine()) {
+            while (scanner.hasNextLine()) {
                 tabela.adicionarTupla(new Tupla(scanner.nextLine()));
-            } scanner.close();*/
+            } scanner.close();
 
         } catch (FileNotFoundException e) {/**/}
 
-        //System.out.println(tabela.toString());
         Scanner scanner = new Scanner(System.in);
         System.out.println("Digite o tamanho das páginas:");
 
         int tamanhoPagina = scanner.nextInt();
         ArrayList<Pagina> paginas = criarPaginas(tabela, tamanhoPagina);
-        imprimirPaginas(paginas);
+        //imprimirPaginas(paginas);
 
         Bucket[] buckets = criarBuckets(tabela, paginas);
-        imprimirBuckets(buckets);
+        //imprimirBuckets(buckets);
+        calcularTaxas((double)tabela.getTamanho());
+
+
+        tableScan(paginas, 20);
+        String palavra = "aahing";
+        System.out.println("Palavra encontrada na pagina: " + buscaHash(buckets, funcaoHash(palavra, buckets.length), palavra));
 
     }
 
@@ -43,7 +43,6 @@ public class Main {
         for (int i = 0; i < palavra.length(); i++) {
             hash = (primo * hash + palavra.charAt(i)) % quantidadeBuckets;
         }
-        System.out.println("Palavra " + palavra + " hash -> " + hash);
         return hash;
     }
 
@@ -69,7 +68,7 @@ public class Main {
     }
 
     private static Bucket[] criarBuckets(Tabela tabela, ArrayList<Pagina> paginas){
-        int tamanhoBucket = 2;
+        int tamanhoBucket = 100;
         int totalTuplas = tabela.getTamanho();
         int quantidadeBuckets = totalTuplas / tamanhoBucket + ( totalTuplas % tamanhoBucket == 0 ? 0 : 1);
 
@@ -90,16 +89,50 @@ public class Main {
         return buckets;
     }
 
+    private static void tableScan(ArrayList<Pagina> paginas, int registrosParaLer) {
+        int registrosLidos = 0;
+        int paginasLidas = 0;
+
+        for (int i = 0; i < paginas.size() && registrosLidos < registrosParaLer; i++, paginasLidas++) {
+            ArrayList<Tupla> tuplas = paginas.get(i).getPagina();
+            for (int j = 0; j < tuplas.size() && registrosLidos < registrosParaLer; j++) {
+                System.out.println(tuplas.get(j).getPalavra());
+                registrosLidos++;
+            }
+        }
+
+        System.out.printf("Registros lidos: %d\nPáginas acessadas: %d\n", registrosLidos, paginasLidas);
+    }
+
+    private static int buscaHash(Bucket[] buckets, int hash, String chaveDeBusca){
+        return buckets[hash].buscarTupla(chaveDeBusca).getIndice();
+    }
+
+
     private static void imprimirPaginas(ArrayList<Pagina> paginas){
         for (int i = 0; i < paginas.size(); i++) {
             System.out.println("Pagina " + paginas.get(i).getIndice());
             System.out.println(paginas.get(i).toString());
         }
     }
-    
+
     private static void imprimirBuckets(Bucket[] buckets){
         for(int i = 0; i<buckets.length; i++){
             System.out.println(buckets[i].toString());
+
+            Bucket bucketDoOverflow = buckets[i].getProximoBucket();
+            while(bucketDoOverflow != null) {
+                System.out.println(bucketDoOverflow);
+                bucketDoOverflow = bucketDoOverflow.getProximoBucket();
+            }
         }
+    }
+
+    private static void calcularTaxas(double totalTuplas) {
+        System.out.println("Colisoes totais: " + colisoes);
+        System.out.println("Overflows totais: " + overflows);
+        System.out.printf("\nTaxa de Colisões: %.2f%%\n", ((double) colisoes / totalTuplas) * 100.0);
+        System.out.printf("Taxa de Overflows: %.2f%%\n", ((double) overflows / totalTuplas) * 100.0);
+
     }
 }

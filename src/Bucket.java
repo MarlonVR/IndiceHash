@@ -1,10 +1,10 @@
-import java.util.ArrayList;
-
 public class Bucket {
     private Tupla[] tuplas;
     private int indice;
     private int tamanhoBucket;
     private Bucket proximoBucket;
+    private int colisoes;
+    private int overflows;
     public Bucket(int tamanhoBucket, int indice) {
         this.tamanhoBucket = tamanhoBucket;
         this.indice = indice;
@@ -24,15 +24,39 @@ public class Bucket {
         }
         else {
             proximoBucket.adicionarTupla(novaTupla);
+            Main.colisoes++;
+            colisoes++;
         }
     }
 
     public void overflow(){
+        Main.overflows++;
+        overflows++;
         proximoBucket = new Bucket(tamanhoBucket, indice);
     }
 
     public int getIndice(){
         return indice;
+    }
+
+    public Bucket getProximoBucket() {
+        return proximoBucket;
+    }
+
+    public int getOverflows(){
+        return overflows;
+    }
+
+    public Tupla buscarTupla(String chaveDeBusca) {
+        for (int i = 0; i < tuplas.length; i++) {
+            if (tuplas[i] != null && tuplas[i].getPalavra().equals(chaveDeBusca)) {
+                return tuplas[i];
+            }
+        }
+        if (proximoBucket != null) {
+            return proximoBucket.buscarTupla(chaveDeBusca);
+        }
+        return null;
     }
 
     @Override
