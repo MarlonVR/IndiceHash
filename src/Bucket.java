@@ -1,5 +1,5 @@
 public class Bucket {
-    private Tupla[] tuplas;
+    private Tupla[] dados;
     private int indice;
     private int tamanhoBucket;
     private Bucket proximoBucket;
@@ -8,31 +8,31 @@ public class Bucket {
     public Bucket(int tamanhoBucket, int indice) {
         this.tamanhoBucket = tamanhoBucket;
         this.indice = indice;
-        this.tuplas = new Tupla[tamanhoBucket];
+        this.dados = new Tupla[tamanhoBucket];
         this.proximoBucket = null;
     }
-    public void adicionarTupla(Tupla novaTupla) {
-        for (int i = 0; i < tuplas.length; i++) {
-            if (tuplas[i] == null) {
-                tuplas[i] = novaTupla;
+    public void adicionarDado(Tupla novoDado) {
+        for (int i = 0; i < dados.length; i++) {
+            if (dados[i] == null) {
+                dados[i] = novoDado;
                 return;
             }
         }
         if(proximoBucket == null){
-            overflow();
-            adicionarTupla(novaTupla);
+            overflow(novoDado);
         }
         else {
-            proximoBucket.adicionarTupla(novaTupla);
+            proximoBucket.adicionarDado(novoDado);
             Main.colisoes++;
             colisoes++;
         }
     }
 
-    public void overflow(){
+    public void overflow(Tupla novoDado){
         Main.overflows++;
         overflows++;
         proximoBucket = new Bucket(tamanhoBucket, indice);
+        adicionarDado(novoDado);
     }
 
     public int getIndice(){
@@ -47,14 +47,14 @@ public class Bucket {
         return overflows;
     }
 
-    public Tupla buscarTupla(String chaveDeBusca) {
-        for (int i = 0; i < tuplas.length; i++) {
-            if (tuplas[i] != null && tuplas[i].getPalavra().equals(chaveDeBusca)) {
-                return tuplas[i];
+    public Tupla buscarDado(String chaveDeBusca) {
+        for (int i = 0; i < dados.length; i++) {
+            if (dados[i] != null && dados[i].getPalavra().equals(chaveDeBusca)) {
+                return dados[i];
             }
         }
         if (proximoBucket != null) {
-            return proximoBucket.buscarTupla(chaveDeBusca);
+            return proximoBucket.buscarDado(chaveDeBusca);
         }
         return null;
     }
@@ -64,7 +64,7 @@ public class Bucket {
         StringBuilder sb = new StringBuilder();
         sb.append("Bucket " + indice + ":\n");
         try{
-            for (Tupla tupla : tuplas) {
+            for (Tupla tupla : dados) {
                 sb.append(tupla.toString()).append("\n");
             }
         }catch (Exception e){
